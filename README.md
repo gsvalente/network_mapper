@@ -4,9 +4,65 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 
 **Note**: This is my first Python project and my first venture into offensive security tools development. It represents a learning journey into both Python programming (which I am currently new with) and cybersecurity concepts, developed with the assistance of AI to help guide both the Python implementation and best practices, as well as README format to make it as clear and detailed as possible. Any suggestion is welcome.
 
+## ⚠️ Legal and Ethical Considerations
+
+**IMPORTANT**: This tool is designed for educational purposes and authorized penetration testing only.
+
+### Legal Usage Guidelines:
+- ✅ Use only on networks you own or have explicit written permission to test
+- ✅ Educational environments and personal labs
+- ✅ Authorized penetration testing engagements
+- ✅ Security research with proper authorization
+
+### Prohibited Usage:
+- ❌ Scanning networks without permission
+- ❌ Unauthorized network reconnaissance
+- ❌ Any malicious activities
+
+**Always ensure you have proper authorization before scanning any network.**
+
 ## 🔄 Recent Enhancements
 
-### Version 1.2 Features (Latest)
+### Version 2.2 Features (Latest - Configuration Management)
+- ✅ **⚙️ Configurable Default Flags**: Easily customize default behavior without code changes
+  - `config/default_flags.json` - Centralized configuration for all command-line defaults
+  - `--show-config` - View current configuration settings
+  - `--reset-config` - Reset to factory defaults with automatic backup
+  - Dynamic help text showing current default values
+  - Configuration validation and error handling
+- ✅ **🎯 User-Friendly Configuration**: Simple JSON-based configuration system
+- ✅ **📚 Comprehensive Documentation**: Complete configuration guide with examples
+- ✅ **🔄 Backup & Recovery**: Automatic configuration backup during reset operations
+- ✅ **🛡️ Secure Defaults**: Security-conscious default configurations
+
+### Version 2.1 Features (DevSecOps Enhanced)
+- ✅ **🔒 DevSecOps Integration**: Enterprise-grade security practices throughout the development lifecycle
+  - `security_logger.py` - Tamper-evident security logging with compliance tracking
+  - `input_validator.py` - OWASP-compliant input validation and sanitization
+  - `secrets_manager.py` - Encrypted secrets management with keyring integration
+  - `rate_limiter.py` - Advanced rate limiting with abuse detection
+  - `compliance_reporter.py` - Multi-framework compliance reporting (NIST, OWASP, ISO 27001)
+  - `secure_config.py` - Secure-by-default configuration with fail-safe mechanisms
+- ✅ **🛡️ Security-First Design**: Defense in depth with multiple security layers
+- ✅ **📊 Compliance Ready**: NIST, OWASP Top 10, and ISO 27001 alignment
+- ✅ **🔍 Security Testing**: Comprehensive SAST configuration and security-focused unit tests
+- ✅ **📈 Security Metrics**: Real-time security monitoring and compliance dashboards
+- ✅ **🚨 Incident Response**: Emergency shutdown capabilities and forensic-ready audit trails
+
+### Version 2.0 Features (Refactored Architecture)
+- ✅ **🏗️ Modular Architecture**: Complete refactoring into clean, maintainable modules
+  - `vulnerability_scanner.py` - Vulnerability assessment engine
+  - `device_detector.py` - Device type detection logic
+  - `network_utils.py` - Network operations (ping, port scan, service detection)
+  - `report_generator.py` - Export and reporting functionality
+  - `network_mapper_refactored.py` - Main orchestrator class
+- ✅ **📦 Package Structure**: Proper Python package with `__init__.py`
+- ✅ **🧪 Enhanced Testing**: Modular components allow for better unit testing
+- ✅ **🔧 Maintainability**: Single Responsibility Principle applied throughout
+- ✅ **🤝 Easy to Read**: Better to look and understand each part and what they do individually
+- ✅ **♻️ Reusability**: Modules can be imported and used in other projects
+
+### Version 1.2 Features
 - ✅ **🛡️ Vulnerability Assessment Engine**: Comprehensive vulnerability database for 20+ services
   - CVE reference mapping for critical vulnerabilities
   - Risk level classification (High/Medium/Low)
@@ -29,25 +85,77 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 - ✅ **Improved Performance**: Reduced scan times through intelligent filtering
 - ✅ **Better Reporting**: Cleaner output with device information
 
-### Known Issues
-- **False Positives**: Some services may be misidentified due to limited port scanning
-- **MAC Address Limitations**: Some devices may not have MAC addresses recorded in ARP tables
-- **Device Type Confidence**: Limited accuracy for unknown device types 
-- **Device Type: Device type may be wrong due to small amount of ports open or found
+## 📁 Project Structure
 
-### Future Enhancements (Maybe)
-- 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
-- 🔮 **GUI Interface**: User-friendly graphical interface
-- 🔮 **Network Topology Visualization**: Interactive network maps
-- 🔮 **Database Storage**: Scan history and trend analysis
-- 🔮 **Web-based Dashboard**: Real-time reporting interface
-- 🔮 **SIEM Integration**: Export to security information systems
-- 🔮 **Automated Reporting**: PDF/HTML report generation
-- 🔮 **Network Change Detection**: Baseline comparison features
+```
+net_mapping/
+├── config/                          # Configuration management
+│   ├── default_flags.json          # Default flag configuration
+│   └── backups/                     # Configuration backups
+├── docs/                            # Documentation
+│   └── configuration_guide.md      # Configuration system guide
+├── modules/                         # Modular components package
+│   ├── __init__.py                 # Package initialization
+│   ├── vulnerability_scanner.py    # Vulnerability assessment logic
+│   ├── device_detector.py         # Device type detection
+│   ├── network_utils.py           # Network operations
+│   ├── report_generator.py        # Export and reporting
+│   ├── security_logger.py         # Security audit logging (DevSecOps)
+│   ├── input_validator.py         # Input validation & sanitization (DevSecOps)
+│   ├── secrets_manager.py         # Encrypted secrets management (DevSecOps)
+│   ├── rate_limiter.py            # Rate limiting & abuse detection (DevSecOps)
+│   ├── compliance_reporter.py     # Compliance reporting (DevSecOps)
+│   └── secure_config.py           # Secure configuration management (DevSecOps)
+├── tests/                          # Test suite
+│   └── test_security.py           # Security-focused unit tests
+├── network_mapper.py              # Original monolithic version
+├── network_mapper_refactored.py   # New modular version (recommended)
+├── requirements.txt               # Python dependencies
+├── sast_config.yml               # SAST tools configuration
+├── README.md                     # This file
+├── README_DevSecOps.md           # Detailed DevSecOps documentation
+└── .gitignore                    # Git ignore patterns
+```
 
-## 📝 License
+## 🐍 Understanding Python Cache (`__pycache__`)
+Adding this because while researching and getting help by the AI Agent, it told me that it makes the python run faster and smoother but i had no clue what this thing was.. So who better to explain than the Python documentation itself?
 
-This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
+When you run Python code, you might notice a `__pycache__` folder appearing in your project directory. Here's what it is:
+
+### What is `__pycache__`?
+- **Purpose**: Python automatically creates this folder to store compiled bytecode files
+- **Files**: Contains `.pyc` files (Python compiled) for faster module loading
+- **Automatic**: Created automatically when you import modules or run Python scripts
+- **Performance**: Speeds up subsequent imports by avoiding recompilation
+
+### Example Structure:
+```
+modules/
+├── __pycache__/                    # Auto-generated cache folder
+│   ├── __init__.cpython-39.pyc    # Compiled version of __init__.py
+│   ├── vulnerability_scanner.cpython-39.pyc
+│   └── device_detector.cpython-39.pyc
+├── __init__.py                     # Your source files
+├── vulnerability_scanner.py
+└── device_detector.py
+```
+
+### Should You Worry About It?
+- **✅ Safe to ignore**: These files are automatically managed by Python
+- **✅ Safe to delete**: Python will recreate them as needed
+- **✅ Git ignored**: Already included in `.gitignore` so they won't be committed
+- **❌ Don't edit**: These are binary files, not meant for human editing
+
+### When Does It Appear?
+```bash
+# This will create __pycache__ folders:
+python network_mapper_refactored.py 192.168.1.0/24
+
+# Because the script imports modules:
+from modules.vulnerability_scanner import VulnerabilityScanner
+from modules.device_detector import DeviceDetector
+# etc.
+```
 
 ---
 
@@ -74,6 +182,18 @@ This project is for educational purposes. Use responsibly and in accordance with
 - **Multi-threading**: Configurable thread count for optimal performance
 - **Cross-platform**: Works on both Windows and Linux systems
 
+### 🔒 DevSecOps Security Features
+
+- **🛡️ Security Audit Logging**: Tamper-evident logging with cryptographic checksums and compliance tracking
+- **🔍 Input Validation**: OWASP-compliant validation preventing injection attacks and malicious inputs
+- **🔐 Secrets Management**: Encrypted storage of API keys and credentials with keyring integration
+- **⚡ Rate Limiting**: Advanced rate limiting with abuse detection and adaptive throttling
+- **📊 Compliance Reporting**: Automated compliance assessments for NIST, OWASP Top 10, and ISO 27001
+- **⚙️ Secure Configuration**: Secure-by-default settings with multiple security levels and fail-safe mechanisms
+- **🚨 Emergency Response**: Emergency shutdown capabilities and incident response features
+- **📈 Security Metrics**: Real-time security monitoring and compliance dashboards
+- **🧪 Security Testing**: Comprehensive SAST configuration and security-focused unit tests
+
 ## 📋 Requirements
 
 ### Python Dependencies
@@ -81,6 +201,13 @@ This project is for educational purposes. Use responsibly and in accordance with
 # No external dependencies required - uses only Python standard library
 python3 -m pip install --upgrade pip
 ```
+
+### DevSecOps Dependencies
+- keyring (for secure credential storage)
+- cryptography (for encryption and security features)
+- bandit (for SAST security analysis)
+- safety (for dependency vulnerability scanning)
+- semgrep (for advanced static analysis)
 
 ### Optional Dependencies
 - **Nmap**: For advanced OS detection and service versioning
@@ -90,79 +217,186 @@ python3 -m pip install --upgrade pip
 
 ## 🛠️ Installation
 
-1. Clone or download the script:
+### Prerequisites
+- **Python 3.7+** (tested with Python 3.8-3.11)
+- **Network access** to target networks
+- **Administrator/root privileges** (recommended for advanced features)
+
+### DevSecOps Dependencies (Optional)
+For enhanced security features, install additional packages:
 ```bash
-git clone <repository-url>
-cd net_mapping
+pip install keyring cryptography psutil
 ```
 
-2. Make the script executable (Linux/Mac):
+### Quick Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd net_mapping
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Verify installation
+python network_mapper_refactored.py --help
+```
+
+### Configuration Setup
+The tool includes a configurable default flags system for easy customization:
+
+```bash
+# View current configuration
+python network_mapper_refactored.py --show-config
+
+# Reset to factory defaults (creates backup)
+python network_mapper_refactored.py --reset-config
+```
+
+**Configuration File**: `config/default_flags.json`
+- Customize default values for all command-line options
+- Automatic validation and error handling
+- Backup system for safe configuration changes
+
+📖 **See `docs/configuration_guide.md` for detailed configuration instructions**
+
+### Additional Setup (Optional)
+
+1. Make the script executable (Linux/Mac):
 ```bash
 chmod +x network_mapper.py
 ```
 
-3. Verify Python installation:
+2. Install DevSecOps tools (optional but recommended):
+```bash
+pip install bandit safety semgrep
+```
+
+3. Run security tests (optional):
+```bash
+python -m pytest tests/test_security.py -v
+bandit -r modules/ -f json -o security_report.json
+safety check
+```
+
+4. Verify Python installation:
 ```bash
 python3 --version
 ```
 
 ## 📖 Usage
 
-### Basic Usage
+### Basic Usage (Recommended - Modular Version)
 
 ```bash
-# Scan a network with vulnerability assessment
-python3 network_mapper.py 192.168.1.0/24
+# Scan a network with vulnerability assessment (new modular version)
+python3 network_mapper_refactored.py 192.168.1.0/24
 
 # Ping sweep only
-python3 network_mapper.py 192.168.1.0/24 --ping-only
+python3 network_mapper_refactored.py 192.168.1.0/24 --ping-only
 
 # Custom thread count and timeout
-python3 network_mapper.py 192.168.1.0/24 -t 100 --timeout 5
+python3 network_mapper_refactored.py 192.168.1.0/24 -t 100 --timeout 5
+
+# Generate vulnerability report
+python3 network_mapper_refactored.py 192.168.1.0/24 --vuln-report
+
+# Enable security logging and compliance reporting
+python3 network_mapper_refactored.py 192.168.1.0/24 --security-level high --compliance-report
+
+# Emergency mode with minimal footprint
+python3 network_mapper_refactored.py 192.168.1.0/24 --security-level emergency
 ```
 
 ### Advanced Usage with Vulnerability Focus
 
 ```bash
 # Exclude specific IP ranges with vulnerability assessment
-python3 network_mapper.py 192.168.1.0/24 --exclude 192.168.1.1 --exclude 192.168.1.200-192.168.1.254
+python3 network_mapper_refactored.py 192.168.1.0/24 --exclude 192.168.1.1 --exclude 192.168.1.200-192.168.1.254
 
 # Disable smart filtering (scan all IPs including gateways)
-python3 network_mapper.py 192.168.1.0/24 --no-smart-filter
+python3 network_mapper_refactored.py 192.168.1.0/24 --no-smart-filter
 
 # Export results with device detection, MAC addresses, and vulnerabilities
-python3 network_mapper.py 192.168.1.0/24 -o my_scan -f json
+python3 network_mapper_refactored.py 192.168.1.0/24 -o my_scan -f json
 
 # Export to CSV with vulnerability data
-python3 network_mapper.py 192.168.1.0/24 -o my_scan -f csv
+python3 network_mapper_refactored.py 192.168.1.0/24 -o my_scan -f csv
 
 # Use nmap for advanced scanning with vulnerability assessment
-python3 network_mapper.py 192.168.1.0/24 --nmap
+python3 network_mapper_refactored.py 192.168.1.0/24 --nmap
 
 # Comprehensive vulnerability scan with all options
-python3 network_mapper.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_vuln_scan -f json --nmap --exclude 10.0.0.1-10.0.0.10
+python3 network_mapper_refactored.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_vuln_scan -f json --nmap --exclude 10.0.0.1-10.0.0.10
+
+# Stealth scan with rate limiting
+python3 network_mapper_refactored.py 10.0.0.0/16 --ports 22,80,443,3389 -t 50 --timeout 5 --rate-limit 10 --security-level medium
+```
+
+### Security Testing
+
+```bash
+# Run comprehensive security tests
+python -m pytest tests/test_security.py -v
+
+# Generate SAST security report
+bandit -r modules/ -f json -o security_report.json
+
+# Check for vulnerable dependencies
+safety check --json --output safety_report.json
+
+# Run Semgrep security analysis
+semgrep --config=auto modules/
+```
+
+### Legacy Usage (Original Monolithic Version)
+
+```bash
+# Original version (still available but not recommended for new projects)
+python3 network_mapper.py 192.168.1.0/24
 ```
 
 ### Command Line Arguments
 
-| Argument | Description | Default |
-|----------|-------------|---------|
-| `network` | Target network in CIDR notation (required) | - |
-| `-t, --threads` | Number of concurrent threads | 50 |
-| `--timeout` | Timeout in seconds for each operation | 3 |
-| `-o, --output` | Output filename (without extension) | Auto-generated |
-| `-f, --format` | Output format (json/csv) | json |
-| `--ping-only` | Only perform host discovery | False |
-| `--nmap` | Use nmap for advanced scanning | False |
-| `--exclude` | Exclude IP ranges (can be used multiple times) | None |
-| `--no-smart-filter` | Disable smart filtering of infrastructure IPs | False |
+| Argument | Description | Default | DevSecOps Enhanced |
+|----------|-------------|---------|-------------------|
+| `network` | Target network in CIDR notation (required) | - | ✅ Input validation |
+| `-t, --threads` | Number of concurrent threads | 50* | ✅ Rate limited |
+| `--timeout` | Timeout in seconds for each operation | 3* | ✅ Secure defaults |
+| `-o, --output` | Output filename (without extension) | Auto-generated | ✅ Path validation |
+| `-f, --format` | Output format (json/csv) | json* | ✅ Format validation |
+| `--ping-only` | Only perform host discovery | False | ✅ Secure scanning |
+| `--nmap` | Use nmap for advanced scanning | False* | ✅ Command injection protection |
+| `--exclude` | Exclude IP ranges (can be used multiple times) | None | ✅ IP validation |
+| `--no-smart-filter` | Disable smart filtering of infrastructure IPs | False | ✅ Security filtering |
+| `--vuln-report` | Generate vulnerability report | False* | ✅ Secure reporting |
+| `--security-level` | Security level (low/medium/high/emergency) | medium | 🆕 DevSecOps feature |
+| `--compliance-report` | Generate compliance assessment report | False | 🆕 DevSecOps feature |
+| `--rate-limit` | Maximum requests per second | 50 | 🆕 DevSecOps feature |
+| `--audit-log` | Enable security audit logging | True | 🆕 DevSecOps feature |
+| `--emergency-mode` | Enable emergency shutdown capabilities | False | 🆕 DevSecOps feature |
+| `--show-config` | Display current configuration settings | N/A | 🆕 Configuration management |
+| `--reset-config` | Reset to factory defaults with backup | N/A | 🆕 Configuration management |
+
+**Note**: Default values marked with * can be customized in `config/default_flags.json`
+
+### Configuration Management Commands
+
+```bash
+# View current default settings
+python network_mapper_refactored.py --show-config
+
+# Reset configuration to factory defaults (creates backup)
+python network_mapper_refactored.py --reset-config
+
+# These commands work without requiring a network argument
+```
 
 ## 📊 Output Examples
 
 ### Console Output
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║                    NETWORK MAPPER v1.0                       ║
+║                    NETWORK MAPPER v2.2                      ║
 ║              Advanced Network Discovery Tool                 ║
 ║                  For Educational Purposes                    ║
 ╚══════════════════════════════════════════════════════════════╝
@@ -378,53 +612,67 @@ python3 network_mapper.py 192.168.1.0/24 -t 10 --timeout 10
 python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 ```
 
-## ⚠️ Legal and Ethical Considerations
 
-**IMPORTANT**: This tool is designed for educational purposes and authorized penetration testing only.
-
-### Legal Usage Guidelines:
-- ✅ Use only on networks you own or have explicit written permission to test
-- ✅ Educational environments and personal labs
-- ✅ Authorized penetration testing engagements
-- ✅ Security research with proper authorization
-
-### Prohibited Usage:
-- ❌ Scanning networks without permission
-- ❌ Unauthorized network reconnaissance
-- ❌ Any malicious activities
-
-**Always ensure you have proper authorization before scanning any network.**
-
-## 🐛 Troubleshooting
+## 🔧 Troubleshooting
 
 ### Common Issues
 
-1. **Permission Denied Errors**
-   ```bash
-   # Linux: Run with sudo for raw socket access
-   sudo python3 network_mapper.py 192.168.1.0/24
-   ```
+1. **Permission Errors**
+   - **Issue**: "Permission denied" when scanning
+   - **Solution**: Run with administrator/root privileges for raw socket operations
+   - **DevSecOps**: Check security audit logs for permission-related events
 
-2. **MAC Address Shows "Unknown"**
-   - MAC addresses only available for local network segments
-   - Try scanning your actual network range instead of localhost
-   - Ensure ARP table has entries (ping devices first)
+2. **High Memory Usage**
+   - **Issue**: Script consumes too much memory on large networks
+   - **Solution**: Reduce thread count (`--threads 25`) or scan smaller subnets
+   - **DevSecOps**: Use `--security-level emergency` for minimal resource usage
 
-3. **Device Detection Low Confidence**
-   - Limited open ports reduce detection accuracy
-   - Try scanning with nmap for better service detection
-   - Some devices intentionally hide their identity
+3. **Slow Scanning**
+   - **Issue**: Scanning takes too long
+   - **Solution**: Increase threads, reduce timeout, or use targeted port lists
+   - **DevSecOps**: Enable rate limiting (`--rate-limit`) to balance speed and stealth
 
-4. **Timeout Issues**
-   ```bash
-   # Increase timeout for slow networks
-   python3 network_mapper.py 192.168.1.0/24 --timeout 10
-   ```
+4. **Nmap Not Found**
+   - **Issue**: "nmap command not found"
+   - **Solution**: Install nmap or run without `--nmap` flag
+   - **DevSecOps**: Input validator will warn about missing dependencies
 
-5. **No Hosts Discovered After Filtering**
-   ```bash
-   # Disable smart filtering to scan all IPs
-   python3 network_mapper.py 192.168.1.0/24 --no-smart-filter
+5. **Network Connectivity**
+   - **Issue**: No hosts discovered
+   - **Solution**: Check network connectivity, firewall rules, and target network
+   - **DevSecOps**: Review security logs for network-related errors
+
+6. **Security Validation Errors**
+   - **Issue**: Input validation failures
+   - **Solution**: Ensure IP ranges, ports, and file paths follow expected formats
+   - **DevSecOps**: Check audit logs for detailed validation error messages
+
+### Known Issues
+
+- Some antivirus software may flag the script as potentially unwanted due to network scanning capabilities
+- Windows Defender may require exclusion for the script directory
+- Rate limiting may affect scan speed but improves stealth and compliance
+- Emergency mode disables some features for maximum security
+
+### Future Enhancements
+
+- **Enhanced DevSecOps Features**:
+  - Integration with SIEM systems
+  - Advanced threat intelligence feeds
+  - Automated incident response workflows
+  - Machine learning-based anomaly detection
+- **Performance Improvements**:
+  - Asynchronous scanning engine
+  - Distributed scanning capabilities
+  - Cloud-native deployment options
+- **Additional Compliance Frameworks**:
+  - SOC 2 Type II compliance
+  - GDPR privacy assessments
+  - Industry-specific standards (HIPAA, PCI-DSS)
+
+## 📝 License
+
+This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
    
    # Check if exclusions are too broad
    python3 network_mapper.py 192.168.1.0/24 --exclude 192.168.1.1

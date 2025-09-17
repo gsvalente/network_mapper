@@ -1,0 +1,75 @@
+{
+  "_comment": "Network Mapper Default Flags Configuration",
+  "_description": "Customize default values for command line flags. Set 'enabled' to true/false to change defaults.",
+  "_usage": "Edit this file to change default behavior. Restart the application for changes to take effect.",
+  
+  "scan_options": {
+    "threads": {
+      "value": 100,
+      "description": "Default number of concurrent threads for scanning"
+    },
+    "timeout": {
+      "value": 5,
+      "description": "Default timeout in seconds for network operations"
+    },
+    "format": {
+      "value": "csv",
+      "description": "Default output format (json or csv)"
+    }
+  },
+  
+  "feature_flags": {
+    "ping_only": {
+      "enabled": false,
+      "description": "Only perform ping sweep (skip port scanning)"
+    },
+    "nmap": {
+      "enabled": true,
+      "description": "Use nmap for advanced scanning by default"
+    },
+    "smart_filter": {
+      "enabled": true,
+      "description": "Enable smart filtering of common infrastructure IPs"
+    },
+    "vuln_report": {
+      "enabled": true,
+      "description": "Generate vulnerability assessment report by default"
+    },
+    "incremental": {
+      "enabled": false,
+      "description": "Enable incremental export mode by default"
+    }
+  },
+  
+  "security_options": {
+    "security_level": {
+      "value": "STANDARD",
+      "description": "Default DevSecOps security level (MINIMAL, STANDARD, STRICT, PARANOID)"
+    },
+    "enable_security_logging": {
+      "enabled": true,
+      "description": "Enable security audit logging by default"
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "description": "Enable rate limiting by default"
+    }
+  },
+  
+  "output_options": {
+    "auto_export": {
+      "enabled": false,
+      "description": "Automatically export results with timestamp"
+    },
+    "default_output_prefix": {
+      "value": "scan_results",
+      "description": "Default prefix for output files when auto-export is enabled"
+    }
+  },
+  
+  "_examples": {
+    "quick_scan": "Set ping_only=true, threads=100, timeout=1 for fast discovery",
+    "security_scan": "Set vuln_report=true, nmap=true, security_level=HIGH for thorough security assessment",
+    "stealth_scan": "Set threads=10, timeout=10, rate_limiting=true for stealth scanning"
+  }
+}
