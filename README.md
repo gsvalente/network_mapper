@@ -4,6 +4,55 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 
 **Note**: This is my first Python project and my first venture into offensive security tools development. It represents a learning journey into both Python programming and cybersecurity concepts, developed with the assistance of AI to help guide the implementation and best practices as well as README format to make it more clear.
 
+## 🔄 Recent Enhancements
+
+### Version 1.2 Features (Latest)
+- ✅ **🛡️ Vulnerability Assessment Engine**: Comprehensive vulnerability database for 20+ services
+  - CVE reference mapping for critical vulnerabilities
+  - Risk level classification (High/Medium/Low)
+  - Attack vector identification and security recommendations
+- ✅ **📊 Excel-Friendly CSV Export**: Optimized spreadsheet format
+  - Separate columns for each service/vulnerability
+  - Shortened descriptions for better readability
+  - UTF-8 encoding support for special characters
+- ✅ **📖 Excel Integration Guide**: Step-by-step import instructions
+  - Data tab import methods
+  - Column formatting recommendations
+  - Troubleshooting common Excel issues
+
+### Version 1.1 Features
+- ✅ **Device Type Detection**: Automatic classification with confidence scoring
+- ✅ **MAC Address Discovery**: ARP table lookup for physical addresses
+- ✅ **Smart IP Filtering**: Skip common infrastructure addresses
+- ✅ **Custom Exclusions**: Flexible IP range exclusion system
+- ✅ **Enhanced Exports**: JSON and CSV now include device type and MAC data
+- ✅ **Improved Performance**: Reduced scan times through intelligent filtering
+- ✅ **Better Reporting**: Cleaner output with device information
+
+### Known Issues
+- **False Positives**: Some services may be misidentified due to limited port scanning
+- **MAC Address Limitations**: Some devices may not have MAC addresses recorded in ARP tables
+- **Device Type Confidence**: Limited accuracy for unknown device types 
+- **Device Type: Device type may be wrong due to small amount of ports open or found
+
+### Future Enhancements (Maybe)
+- 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
+- 🔮 **GUI Interface**: User-friendly graphical interface
+- 🔮 **Network Topology Visualization**: Interactive network maps
+- 🔮 **Database Storage**: Scan history and trend analysis
+- 🔮 **Web-based Dashboard**: Real-time reporting interface
+- 🔮 **SIEM Integration**: Export to security information systems
+- 🔮 **Automated Reporting**: PDF/HTML report generation
+- 🔮 **Network Change Detection**: Baseline comparison features
+
+## 📝 License
+
+This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
+
+---
+
+**Disclaimer**: This tool is provided for educational and authorized testing purposes only. Users are responsible for ensuring compliance with applicable laws and regulations.
+
 ## 🚀 Features
 
 - **Host Discovery**: Fast ping sweep to identify live hosts on a network
@@ -387,52 +436,3 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
    sudo apt-get install nmap  # Linux
    # Or download from nmap.org for Windows
    ```
-
-## 🔄 Recent Enhancements
-
-### Version 1.2 Features (Latest)
-- ✅ **🛡️ Vulnerability Assessment Engine**: Comprehensive vulnerability database for 20+ services
-  - CVE reference mapping for critical vulnerabilities
-  - Risk level classification (High/Medium/Low)
-  - Attack vector identification and security recommendations
-- ✅ **📊 Excel-Friendly CSV Export**: Optimized spreadsheet format
-  - Separate columns for each service/vulnerability
-  - Shortened descriptions for better readability
-  - UTF-8 encoding support for special characters
-- ✅ **📖 Excel Integration Guide**: Step-by-step import instructions
-  - Data tab import methods
-  - Column formatting recommendations
-  - Troubleshooting common Excel issues
-
-### Version 1.1 Features
-- ✅ **Device Type Detection**: Automatic classification with confidence scoring
-- ✅ **MAC Address Discovery**: ARP table lookup for physical addresses
-- ✅ **Smart IP Filtering**: Skip common infrastructure addresses
-- ✅ **Custom Exclusions**: Flexible IP range exclusion system
-- ✅ **Enhanced Exports**: JSON and CSV now include device type and MAC data
-- ✅ **Improved Performance**: Reduced scan times through intelligent filtering
-- ✅ **Better Reporting**: Cleaner output with device information
-
-### Known Issues
-- **False Positives**: Some services may be misidentified due to limited port scanning
-- **MAC Address Limitations**: Some devices may not have MAC addresses recorded in ARP tables
-- **Device Type Confidence**: Limited accuracy for unknown device types 
-- **Device Type: Device type may be wrong due to small amount of ports open or found
-
-### Future Enhancements (Maybe)
-- 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
-- 🔮 **GUI Interface**: User-friendly graphical interface
-- 🔮 **Network Topology Visualization**: Interactive network maps
-- 🔮 **Database Storage**: Scan history and trend analysis
-- 🔮 **Web-based Dashboard**: Real-time reporting interface
-- 🔮 **SIEM Integration**: Export to security information systems
-- 🔮 **Automated Reporting**: PDF/HTML report generation
-- 🔮 **Network Change Detection**: Baseline comparison features
-
-## 📝 License
-
-This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
-
----
-
-**Disclaimer**: This tool is provided for educational and authorized testing purposes only. Users are responsible for ensuring compliance with applicable laws and regulations.
