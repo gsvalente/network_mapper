@@ -495,7 +495,7 @@ class NetworkMapper:
         """Display tool banner"""
         banner = f"""
 {Fore.CYAN}╔══════════════════════════════════════════════════════════════╗
-║{Style.BRIGHT}                    NETWORK MAPPER v1.0                       {Style.RESET_ALL}{Fore.CYAN}║
+║{Style.BRIGHT}                    NETWORK MAPPER v2.2                       {Style.RESET_ALL}{Fore.CYAN}║
 ║{Style.BRIGHT}              Advanced Network Discovery Tool                 {Style.RESET_ALL}{Fore.CYAN}║
 ║{Style.BRIGHT}                  For Educational Purposes Only               {Style.RESET_ALL}{Fore.CYAN}║
 ╚══════════════════════════════════════════════════════════════╝{Style.RESET_ALL}

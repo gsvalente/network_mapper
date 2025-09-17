@@ -6,7 +6,7 @@ This is the refactored version of the network mapper that uses a modular archite
 for better maintainability, testing, and code organization.
 
 Author: Gustavo Valente
-Version: 2.0 (Refactored)
+Version: 2.0 (Refactored) - DevSecOps Enhanced
 """
 
 import os
@@ -23,6 +23,7 @@ import signal
 import atexit
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 import xml.etree.ElementTree as ET
 
 # Import our custom modules
@@ -30,6 +31,14 @@ from modules.vulnerability_scanner import VulnerabilityScanner
 from modules.device_detector import DeviceDetector
 from modules.network_utils import NetworkUtils
 from modules.report_generator import ReportGenerator
+
+# Import new security modules
+from modules.security_logger import SecurityLogger
+from modules.input_validator import InputValidator
+from modules.secrets_manager import SecretsManager
+from modules.rate_limiter import RateLimiter
+from modules.compliance_reporter import ComplianceReporter, ComplianceFramework, ComplianceControl, ComplianceStatus, SecurityMetric
+from modules.secure_config import SecureConfigManager, SecurityLevel
 
 # Optional dependencies with fallbacks
 try:
@@ -79,15 +88,15 @@ except ImportError:
 
 class NetworkMapper:
     """
-    Main NetworkMapper class - refactored to use modular components
+    Main NetworkMapper class - refactored to use modular components with DevSecOps enhancements
     
     This class orchestrates the various modules to perform comprehensive
-    network mapping and vulnerability assessment.
+    network mapping and vulnerability assessment with integrated security controls.
     """
     
-    def __init__(self, target_network, threads=50, timeout=3, exclude_ranges=None, smart_filter=True):
+    def __init__(self, target_network, threads=50, timeout=3, exclude_ranges=None, smart_filter=True, security_level=SecurityLevel.STANDARD):
         """
-        Initialize NetworkMapper with modular components
+        Initialize NetworkMapper with modular components and security enhancements
         
         Args:
             target_network (str): Target network in CIDR notation
@@ -95,23 +104,68 @@ class NetworkMapper:
             timeout (int): Timeout for network operations
             exclude_ranges (list): IP ranges to exclude from scanning
             smart_filter (bool): Enable smart filtering of infrastructure IPs
+            security_level (SecurityLevel): Security level for configuration
         """
-        self.target_network = target_network
-        self.threads = threads
-        self.timeout = timeout
+        # Initialize security components first
+        self.security_config = SecureConfigManager(security_level=security_level)
+        
+        # Initialize DevSecOps security components
+        from modules.rate_limiter import RateLimitConfig
+        
+        self.input_validator = InputValidator()
+        self.security_logger = SecurityLogger()
+        self.secrets_manager = SecretsManager()
+        
+        # Create rate limiter with proper configuration
+        rate_config = RateLimitConfig(
+            requests_per_second=self.security_config.config.rate_limit_per_second,
+            max_concurrent_scans=self.security_config.config.max_concurrent_scans
+        )
+        self.rate_limiter = RateLimiter(config=rate_config)
+        self.compliance_reporter = ComplianceReporter()
+        
+        # Check for emergency shutdown
+        if self.security_config.is_emergency_shutdown():
+            raise RuntimeError("System is in emergency shutdown mode. Clear emergency state before proceeding.")
+        
+        # Validate and sanitize inputs
+        try:
+            self.target_network = self.input_validator.validate_network_target(target_network)
+            self.threads = min(threads, self.security_config.config.max_concurrent_scans)
+            self.timeout = min(timeout, self.security_config.config.scan_timeout)
+        except ValueError as e:
+            self.security_logger.log_security_event(
+                "INPUT_VALIDATION_FAILURE",
+                target_network,
+                {"error": str(e), "blocked": True}
+            )
+            raise
+        
         self.exclude_ranges = exclude_ranges or []
         self.smart_filter = smart_filter
         
         # Initialize modular components
         self.vulnerability_scanner = VulnerabilityScanner()
         self.device_detector = DeviceDetector()
-        self.network_utils = NetworkUtils(threads=threads, timeout=timeout)
+        self.network_utils = NetworkUtils(threads=self.threads, timeout=self.timeout)
         self.report_generator = ReportGenerator()
         
         # Scan state
         self.discovered_hosts = []
         self.scan_results = {}
         self.scan_start_time = None
+        
+        # Log security event for scan initialization
+        self.security_logger.log_security_event(
+            "SCAN_INITIALIZED",
+            self.target_network,
+            {
+                "threads": self.threads,
+                "timeout": self.timeout,
+                "security_level": security_level.value,
+                "smart_filter": self.smart_filter
+            }
+        )
         
         # Setup signal handlers for graceful shutdown
         signal.signal(signal.SIGINT, self.signal_handler)
@@ -137,7 +191,7 @@ class NetworkMapper:
         """Print application banner"""
         banner = f"""
 {Fore.CYAN}╔══════════════════════════════════════════════════════════════════════════════╗
-║                    Advanced Network Mapping Tool v2.0                       ║
+║                    Advanced Network Mapping Tool v2.2                       ║
 ║                        Vulnerability Assessment Edition                      ║
 ╚══════════════════════════════════════════════════════════════════════════════╝{Fore.RESET}
 
@@ -151,8 +205,11 @@ class NetworkMapper:
     
     def ping_sweep(self):
         """Perform ping sweep to discover live hosts"""
+        # Extract the sanitized network string from validation result
+        network_target = self.target_network.get('sanitized') if isinstance(self.target_network, dict) else self.target_network
+        
         self.discovered_hosts = self.network_utils.ping_sweep(
-            self.target_network, 
+            network_target, 
             self.exclude_ranges, 
             self.smart_filter
         )
@@ -322,10 +379,55 @@ class NetworkMapper:
         }
 
 
+def load_default_config():
+    """Load default configuration from config file"""
+    config_path = Path("config/default_flags.json")
+    
+    # Default configuration if file doesn't exist
+    default_config = {
+        "scan_options": {
+            "threads": {"value": 50},
+            "timeout": {"value": 3},
+            "format": {"value": "json"}
+        },
+        "feature_flags": {
+            "ping_only": {"enabled": False},
+            "nmap": {"enabled": False},
+            "smart_filter": {"enabled": True},
+            "vuln_report": {"enabled": False},
+            "incremental": {"enabled": False}
+        },
+        "security_options": {
+            "security_level": {"value": "STANDARD"},
+            "enable_security_logging": {"enabled": True},
+            "rate_limiting": {"enabled": True}
+        },
+        "output_options": {
+            "auto_export": {"enabled": False},
+            "default_output_prefix": {"value": "scan_results"}
+        }
+    }
+    
+    try:
+        if config_path.exists():
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+                return config
+        else:
+            print(f"[!] Config file not found at {config_path}, using defaults")
+            return default_config
+    except Exception as e:
+        print(f"[!] Error loading config: {e}, using defaults")
+        return default_config
+
+
 def main():
     """Main function with enhanced argument parsing"""
+    # Load default configuration
+    config = load_default_config()
+    
     parser = argparse.ArgumentParser(
-        description='Advanced Network Mapping and Vulnerability Assessment Tool v2.0',
+        description='Advanced Network Mapping and Vulnerability Assessment Tool v2.2',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -333,32 +435,76 @@ Examples:
   %(prog)s 192.168.1.0/24 -t 100 --timeout 5 # High-speed scan
   %(prog)s 192.168.1.0/24 -o report -f csv   # Export to CSV
   %(prog)s 192.168.1.0/24 --vuln-report      # Generate vulnerability report
+  
+Configuration:
+  Edit config/default_flags.json to change default flag values
         """
     )
     
-    parser.add_argument('network', help='Target network (e.g., 192.168.1.0/24)')
-    parser.add_argument('-t', '--threads', type=int, default=50, 
-                       help='Number of threads (default: 50)')
-    parser.add_argument('--timeout', type=int, default=3, 
-                       help='Timeout in seconds (default: 3)')
+    # Configuration management flags (processed first)
+    parser.add_argument('--show-config', action='store_true',
+                       help='Show current default configuration and exit')
+    parser.add_argument('--reset-config', action='store_true',
+                       help='Reset configuration to factory defaults')
+    
+    parser.add_argument('network', nargs='?', help='Target network (e.g., 192.168.1.0/24)')
+    parser.add_argument('-t', '--threads', type=int, 
+                       default=config['scan_options']['threads']['value'],
+                       help=f'Number of threads (default: {config["scan_options"]["threads"]["value"]})')
+    parser.add_argument('--timeout', type=int, 
+                       default=config['scan_options']['timeout']['value'],
+                       help=f'Timeout in seconds (default: {config["scan_options"]["timeout"]["value"]})')
     parser.add_argument('-o', '--output', 
                        help='Output filename (without extension)')
-    parser.add_argument('-f', '--format', choices=['json', 'csv'], default='json', 
-                       help='Output format (default: json)')
+    parser.add_argument('-f', '--format', choices=['json', 'csv'], 
+                       default=config['scan_options']['format']['value'],
+                       help=f'Output format (default: {config["scan_options"]["format"]["value"]})')
+    
+    # Feature flags with configurable defaults
     parser.add_argument('--ping-only', action='store_true', 
-                       help='Only perform ping sweep')
+                       default=config['feature_flags']['ping_only']['enabled'],
+                       help=f'Only perform ping sweep (default: {config["feature_flags"]["ping_only"]["enabled"]})')
     parser.add_argument('--nmap', action='store_true', 
-                       help='Use nmap for advanced scanning')
-    parser.add_argument('--exclude', action='append', 
-                       help='Exclude IP ranges (can be used multiple times)')
+                       default=config['feature_flags']['nmap']['enabled'],
+                       help=f'Use nmap for advanced scanning (default: {config["feature_flags"]["nmap"]["enabled"]})')
     parser.add_argument('--no-smart-filter', action='store_true', 
-                       help='Disable smart filtering of common infrastructure IPs')
+                       default=not config['feature_flags']['smart_filter']['enabled'],
+                       help=f'Disable smart filtering of common infrastructure IPs (smart filter default: {config["feature_flags"]["smart_filter"]["enabled"]})')
     parser.add_argument('--vuln-report', action='store_true',
-                       help='Generate focused vulnerability assessment report')
+                       default=config['feature_flags']['vuln_report']['enabled'],
+                       help=f'Generate focused vulnerability assessment report (default: {config["feature_flags"]["vuln_report"]["enabled"]})')
     parser.add_argument('--incremental', action='store_true',
-                       help='Enable incremental export mode')
+                       default=config['feature_flags']['incremental']['enabled'],
+                       help=f'Enable incremental export mode (default: {config["feature_flags"]["incremental"]["enabled"]})')
     
     args = parser.parse_args()
+    
+    # Handle configuration management
+    if args.show_config:
+        print("\n[+] Current Default Configuration:")
+        print(json.dumps(config, indent=2))
+        return
+    
+    if args.reset_config:
+        config_path = Path("config/default_flags.json")
+        if config_path.exists():
+            backup_path = config_path.with_suffix('.json.backup')
+            config_path.rename(backup_path)
+            print(f"[+] Configuration backed up to {backup_path}")
+            print("[+] Configuration reset to defaults. Restart to use factory defaults.")
+        else:
+            print("[!] No configuration file found to reset.")
+        return
+    
+    # Auto-export handling
+    if config['output_options']['auto_export']['enabled'] and not args.output:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        args.output = f"{config['output_options']['default_output_prefix']['value']}_{timestamp}"
+        print(f"[+] Auto-export enabled: Results will be saved as {args.output}.{args.format}")
+    
+    # Validate required network argument for scanning operations
+    if not args.network:
+        parser.error("Network argument is required for scanning operations")
     
     # Create network mapper instance
     mapper = NetworkMapper(
