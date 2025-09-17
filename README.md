@@ -2,7 +2,7 @@
 
 A comprehensive Python-based network mapping and discovery tool designed for penetration testing and network analysis. This tool provides host discovery, port scanning, service detection, vulnerability assessment, device type identification, MAC address discovery, and detailed reporting capabilities with Excel-friendly CSV export.
 
-**Note**: This is my first Python project and my first venture into offensive security tools development. It represents a learning journey into both Python programming and cybersecurity concepts, developed with the assistance of AI to help guide the implementation and best practices as well as README format to make it more clear.
+**Note**: This is my first Python project and my first venture into offensive security tools development. It represents a learning journey into both Python programming and cybersecurity concepts, developed with the assistance of AI to help guide the implementation and best practices as well as README format to make as clear and detailed as possible. Any suggestion is welcome.
 
 ## 🔄 Recent Enhancements
 
