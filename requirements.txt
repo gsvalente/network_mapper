@@ -1,0 +1,18 @@
+# Network Mapper Requirements
+# This tool primarily uses Python standard library modules
+# No external dependencies are strictly required for basic functionality
+
+# Optional dependencies for enhanced features:
+# python-nmap>=0.7.1  # For advanced nmap integration (alternative to subprocess)
+# colorama>=0.4.4     # For colored terminal output
+# tabulate>=0.9.0     # For better table formatting
+# matplotlib>=3.5.0   # For network visualization (future enhancement)
+# networkx>=2.8       # For network graph analysis (future enhancement)
+
+# Development dependencies:
+# pytest>=7.0.0       # For unit testing
+# black>=22.0.0       # For code formatting
+# flake8>=4.0.0       # For code linting
+
+# Note: The script works with Python 3.6+ and uses only standard library modules
+# for maximum compatibility and minimal dependencies.
