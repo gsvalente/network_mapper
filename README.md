@@ -4,9 +4,39 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 
 **Note**: This is my first Python project and my first venture into offensive security tools development. It represents a learning journey into both Python programming (which I am currently new with) and cybersecurity concepts, developed with the assistance of AI to help guide both the Python implementation and best practices, as well as README format to make it as clear and detailed as possible. Any suggestion is welcome.
 
+## ⚠️ Legal and Ethical Considerations
+
+**IMPORTANT**: This tool is designed for educational purposes and authorized penetration testing only.
+
+### Legal Usage Guidelines:
+- ✅ Use only on networks you own or have explicit written permission to test
+- ✅ Educational environments and personal labs
+- ✅ Authorized penetration testing engagements
+- ✅ Security research with proper authorization
+
+### Prohibited Usage:
+- ❌ Scanning networks without permission
+- ❌ Unauthorized network reconnaissance
+- ❌ Any malicious activities
+
+**Always ensure you have proper authorization before scanning any network.**
+
 ## 🔄 Recent Enhancements
 
-### Version 1.2 Features (Latest)
+### Version 2.0 Features (Latest - Refactored Architecture)
+- ✅ **🏗️ Modular Architecture**: Complete refactoring into clean, maintainable modules
+  - `vulnerability_scanner.py` - Vulnerability assessment engine
+  - `device_detector.py` - Device type detection logic
+  - `network_utils.py` - Network operations (ping, port scan, service detection)
+  - `report_generator.py` - Export and reporting functionality
+  - `network_mapper_refactored.py` - Main orchestrator class
+- ✅ **📦 Package Structure**: Proper Python package with `__init__.py`
+- ✅ **🧪 Enhanced Testing**: Modular components allow for better unit testing
+- ✅ **🔧 Maintainability**: Single Responsibility Principle applied throughout
+- ✅ **🤝 Collaboration**: Multiple developers can work on different modules
+- ✅ **♻️ Reusability**: Modules can be imported and used in other projects
+
+### Version 1.2 Features
 - ✅ **🛡️ Vulnerability Assessment Engine**: Comprehensive vulnerability database for 20+ services
   - CVE reference mapping for critical vulnerabilities
   - Risk level classification (High/Medium/Low)
@@ -29,25 +59,62 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 - ✅ **Improved Performance**: Reduced scan times through intelligent filtering
 - ✅ **Better Reporting**: Cleaner output with device information
 
-### Known Issues
-- **False Positives**: Some services may be misidentified due to limited port scanning
-- **MAC Address Limitations**: Some devices may not have MAC addresses recorded in ARP tables
-- **Device Type Confidence**: Limited accuracy for unknown device types 
-- **Device Type: Device type may be wrong due to small amount of ports open or found
+## 📁 Project Structure
 
-### Future Enhancements (Maybe)
-- 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
-- 🔮 **GUI Interface**: User-friendly graphical interface
-- 🔮 **Network Topology Visualization**: Interactive network maps
-- 🔮 **Database Storage**: Scan history and trend analysis
-- 🔮 **Web-based Dashboard**: Real-time reporting interface
-- 🔮 **SIEM Integration**: Export to security information systems
-- 🔮 **Automated Reporting**: PDF/HTML report generation
-- 🔮 **Network Change Detection**: Baseline comparison features
+```
+net_mapping/
+├── modules/                          # Modular components package
+│   ├── __init__.py                  # Package initialization
+│   ├── vulnerability_scanner.py     # Vulnerability assessment logic
+│   ├── device_detector.py          # Device type detection
+│   ├── network_utils.py            # Network operations
+│   └── report_generator.py         # Export and reporting
+├── network_mapper.py               # Original monolithic version
+├── network_mapper_refactored.py    # New modular version (recommended)
+├── requirements.txt                # Python dependencies
+├── README.md                       # This file
+└── .gitignore                      # Git ignore patterns
+```
 
-## 📝 License
+## 🐍 Understanding Python Cache (`__pycache__`)
+Adding this because while researching and getting help by the AI Agent, it told me that it makes the python run faster and smoother but i had no clue what this thing was.. So who better to explain than the Python documentation itself?
 
-This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
+When you run Python code, you might notice a `__pycache__` folder appearing in your project directory. Here's what it is:
+
+### What is `__pycache__`?
+- **Purpose**: Python automatically creates this folder to store compiled bytecode files
+- **Files**: Contains `.pyc` files (Python compiled) for faster module loading
+- **Automatic**: Created automatically when you import modules or run Python scripts
+- **Performance**: Speeds up subsequent imports by avoiding recompilation
+
+### Example Structure:
+```
+modules/
+├── __pycache__/                    # Auto-generated cache folder
+│   ├── __init__.cpython-39.pyc    # Compiled version of __init__.py
+│   ├── vulnerability_scanner.cpython-39.pyc
+│   └── device_detector.cpython-39.pyc
+├── __init__.py                     # Your source files
+├── vulnerability_scanner.py
+└── device_detector.py
+```
+
+### Should You Worry About It?
+- **✅ Safe to ignore**: These files are automatically managed by Python
+- **✅ Safe to delete**: Python will recreate them as needed
+- **✅ Git ignored**: Already included in `.gitignore` so they won't be committed
+- **❌ Don't edit**: These are binary files, not meant for human editing
+
+### When Does It Appear?
+```bash
+# This will create __pycache__ folders:
+python network_mapper_refactored.py 192.168.1.0/24
+
+# Because the script imports modules:
+from modules.vulnerability_scanner import VulnerabilityScanner
+from modules.device_detector import DeviceDetector
+# etc.
+```
 
 ---
 
@@ -108,39 +175,49 @@ python3 --version
 
 ## 📖 Usage
 
-### Basic Usage
+### Basic Usage (Recommended - Modular Version)
 
 ```bash
-# Scan a network with vulnerability assessment
-python3 network_mapper.py 192.168.1.0/24
+# Scan a network with vulnerability assessment (new modular version)
+python3 network_mapper_refactored.py 192.168.1.0/24
 
 # Ping sweep only
-python3 network_mapper.py 192.168.1.0/24 --ping-only
+python3 network_mapper_refactored.py 192.168.1.0/24 --ping-only
 
 # Custom thread count and timeout
-python3 network_mapper.py 192.168.1.0/24 -t 100 --timeout 5
+python3 network_mapper_refactored.py 192.168.1.0/24 -t 100 --timeout 5
+
+# Generate vulnerability report
+python3 network_mapper_refactored.py 192.168.1.0/24 --vuln-report
 ```
 
 ### Advanced Usage with Vulnerability Focus
 
 ```bash
 # Exclude specific IP ranges with vulnerability assessment
-python3 network_mapper.py 192.168.1.0/24 --exclude 192.168.1.1 --exclude 192.168.1.200-192.168.1.254
+python3 network_mapper_refactored.py 192.168.1.0/24 --exclude 192.168.1.1 --exclude 192.168.1.200-192.168.1.254
 
 # Disable smart filtering (scan all IPs including gateways)
-python3 network_mapper.py 192.168.1.0/24 --no-smart-filter
+python3 network_mapper_refactored.py 192.168.1.0/24 --no-smart-filter
 
 # Export results with device detection, MAC addresses, and vulnerabilities
-python3 network_mapper.py 192.168.1.0/24 -o my_scan -f json
+python3 network_mapper_refactored.py 192.168.1.0/24 -o my_scan -f json
 
 # Export to CSV with vulnerability data
-python3 network_mapper.py 192.168.1.0/24 -o my_scan -f csv
+python3 network_mapper_refactored.py 192.168.1.0/24 -o my_scan -f csv
 
 # Use nmap for advanced scanning with vulnerability assessment
-python3 network_mapper.py 192.168.1.0/24 --nmap
+python3 network_mapper_refactored.py 192.168.1.0/24 --nmap
 
 # Comprehensive vulnerability scan with all options
-python3 network_mapper.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_vuln_scan -f json --nmap --exclude 10.0.0.1-10.0.0.10
+python3 network_mapper_refactored.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_vuln_scan -f json --nmap --exclude 10.0.0.1-10.0.0.10
+```
+
+### Legacy Usage (Original Monolithic Version)
+
+```bash
+# Original version (still available but not recommended for new projects)
+python3 network_mapper.py 192.168.1.0/24
 ```
 
 ### Command Line Arguments
@@ -156,6 +233,7 @@ python3 network_mapper.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_vuln_scan -
 | `--nmap` | Use nmap for advanced scanning | False |
 | `--exclude` | Exclude IP ranges (can be used multiple times) | None |
 | `--no-smart-filter` | Disable smart filtering of infrastructure IPs | False |
+| `--vuln-report` | Generate vulnerability report | False |
 
 ## 📊 Output Examples
 
@@ -378,22 +456,6 @@ python3 network_mapper.py 192.168.1.0/24 -t 10 --timeout 10
 python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 ```
 
-## ⚠️ Legal and Ethical Considerations
-
-**IMPORTANT**: This tool is designed for educational purposes and authorized penetration testing only.
-
-### Legal Usage Guidelines:
-- ✅ Use only on networks you own or have explicit written permission to test
-- ✅ Educational environments and personal labs
-- ✅ Authorized penetration testing engagements
-- ✅ Security research with proper authorization
-
-### Prohibited Usage:
-- ❌ Scanning networks without permission
-- ❌ Unauthorized network reconnaissance
-- ❌ Any malicious activities
-
-**Always ensure you have proper authorization before scanning any network.**
 
 ## 🐛 Troubleshooting
 
@@ -402,7 +464,7 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 1. **Permission Denied Errors**
    ```bash
    # Linux: Run with sudo for raw socket access
-   sudo python3 network_mapper.py 192.168.1.0/24
+   sudo python3 network_mapper_refactored.py 192.168.1.0/24
    ```
 
 2. **MAC Address Shows "Unknown"**
@@ -418,13 +480,41 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 4. **Timeout Issues**
    ```bash
    # Increase timeout for slow networks
-   python3 network_mapper.py 192.168.1.0/24 --timeout 10
+   python3 network_mapper_refactored.py 192.168.1.0/24 --timeout 10
    ```
 
 5. **No Hosts Discovered After Filtering**
    ```bash
    # Disable smart filtering to scan all IPs
-   python3 network_mapper.py 192.168.1.0/24 --no-smart-filter
+   python3 network_mapper_refactored.py 192.168.1.0/24 --no-smart-filter
+   ```
+
+6. **Module Import Errors**
+   ```bash
+   # Ensure you're running from the project root directory
+   cd net_mapping
+   python3 network_mapper_refactored.py 192.168.1.0/24
+   ```
+
+### Known Issues
+- **False Positives**: Some services may be misidentified due to limited port scanning
+- **MAC Address Limitations**: Some devices may not have MAC addresses recorded in ARP tables
+- **Device Type Confidence**: Limited accuracy for unknown device types 
+- **Device Type**: Device type may be wrong due to small amount of ports open or found
+
+### Future Enhancements (Maybe)
+- 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
+- 🔮 **GUI Interface**: User-friendly graphical interface
+- 🔮 **Network Topology Visualization**: Interactive network maps
+- 🔮 **Database Storage**: Scan history and trend analysis
+- 🔮 **Web-based Dashboard**: Real-time reporting interface
+- 🔮 **SIEM Integration**: Export to security information systems
+- 🔮 **Automated Reporting**: PDF/HTML report generation
+- 🔮 **Network Change Detection**: Baseline comparison features
+
+## 📝 License
+
+This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
    
    # Check if exclusions are too broad
    python3 network_mapper.py 192.168.1.0/24 --exclude 192.168.1.1
