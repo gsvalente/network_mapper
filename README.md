@@ -33,7 +33,7 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 - ✅ **📦 Package Structure**: Proper Python package with `__init__.py`
 - ✅ **🧪 Enhanced Testing**: Modular components allow for better unit testing
 - ✅ **🔧 Maintainability**: Single Responsibility Principle applied throughout
-- ✅ **🤝 Collaboration**: Multiple developers can work on different modules
+- ✅ **🤝 Easy to Read**: Better to look and understand each part and what they do individually
 - ✅ **♻️ Reusability**: Modules can be imported and used in other projects
 
 ### Version 1.2 Features
