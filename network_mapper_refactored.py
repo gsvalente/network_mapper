@@ -477,6 +477,10 @@ Configuration:
                        default=config['feature_flags']['incremental']['enabled'],
                        help=f'Enable incremental export mode (default: {config["feature_flags"]["incremental"]["enabled"]})')
     
+    # IP exclusion options
+    parser.add_argument('--exclude', action='append', 
+                       help='Exclude IP ranges (can be used multiple times)')
+    
     args = parser.parse_args()
     
     # Handle configuration management
