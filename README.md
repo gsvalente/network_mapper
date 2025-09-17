@@ -413,6 +413,12 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 - ✅ **Improved Performance**: Reduced scan times through intelligent filtering
 - ✅ **Better Reporting**: Cleaner output with device information
 
+### Known Issues
+- **False Positives**: Some services may be misidentified due to limited port scanning
+- **MAC Address Limitations**: Some devices may not have MAC addresses recorded in ARP tables
+- **Device Type Confidence**: Limited accuracy for unknown device types 
+- **Device Type: Device type may be wrong due to small amount of ports open or found
+
 ### Future Enhancements
 - 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
 - 🔮 **GUI Interface**: User-friendly graphical interface
@@ -426,7 +432,6 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 ## 📝 License
 
 This project is for educational purposes. Use responsibly and in accordance with applicable laws and regulations.
-
 
 ---
 
