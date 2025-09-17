@@ -1,6 +1,6 @@
-# Network Mapper - Advanced Network Discovery Tool
+# Network Mapper - Advanced Network Discovery & Vulnerability Assessment Tool
 
-A comprehensive Python-based network mapping and discovery tool designed for penetration testing and network analysis. This tool provides host discovery, port scanning, service detection, device type identification, MAC address discovery, and detailed reporting capabilities.
+A comprehensive Python-based network mapping and discovery tool designed for penetration testing and network analysis. This tool provides host discovery, port scanning, service detection, vulnerability assessment, device type identification, MAC address discovery, and detailed reporting capabilities with Excel-friendly CSV export.
 
 **Note**: This is my first Python project and my first venture into offensive security tools development. It represents a learning journey into both Python programming and cybersecurity concepts, developed with the assistance of AI to help guide the implementation and best practices as well as README format to make it more clear.
 
@@ -11,10 +11,16 @@ A comprehensive Python-based network mapping and discovery tool designed for pen
 - **Custom IP Exclusion**: Exclude specific IP ranges or addresses from scanning
 - **Port Scanning**: Multi-threaded port scanning with customizable port lists
 - **Service Detection**: Automatic service fingerprinting and banner grabbing
+- **🔥 Vulnerability Assessment**: Comprehensive vulnerability database with 20+ services
+  - Attack vector identification
+  - Critical vulnerability detection (CVE mapping)
+  - Security risk assessment
 - **Device Type Detection**: Intelligent device classification (Windows, Linux, routers, mobile devices, IoT)
 - **MAC Address Discovery**: Retrieves MAC addresses via ARP table lookup
 - **Hostname Resolution**: DNS reverse lookup for discovered hosts
-- **Multiple Output Formats**: Export results in JSON or CSV format with enhanced metadata
+- **Multiple Output Formats**: Export results in JSON or Excel-friendly CSV format
+  - **Enhanced CSV**: Separate columns for each service/vulnerability
+  - **Excel Integration**: Optimized formatting for spreadsheet analysis
 - **Nmap Integration**: Optional nmap integration for advanced scanning
 - **Multi-threading**: Configurable thread count for optimal performance
 - **Cross-platform**: Works on both Windows and Linux systems
@@ -56,7 +62,7 @@ python3 --version
 ### Basic Usage
 
 ```bash
-# Basic network scan with smart filtering
+# Scan a network with vulnerability assessment
 python3 network_mapper.py 192.168.1.0/24
 
 # Ping sweep only
@@ -66,26 +72,26 @@ python3 network_mapper.py 192.168.1.0/24 --ping-only
 python3 network_mapper.py 192.168.1.0/24 -t 100 --timeout 5
 ```
 
-### Advanced Usage with Filtering
+### Advanced Usage with Vulnerability Focus
 
 ```bash
-# Exclude specific IP ranges
+# Exclude specific IP ranges with vulnerability assessment
 python3 network_mapper.py 192.168.1.0/24 --exclude 192.168.1.1 --exclude 192.168.1.200-192.168.1.254
 
 # Disable smart filtering (scan all IPs including gateways)
 python3 network_mapper.py 192.168.1.0/24 --no-smart-filter
 
-# Export results with device detection and MAC addresses
+# Export results with device detection, MAC addresses, and vulnerabilities
 python3 network_mapper.py 192.168.1.0/24 -o my_scan -f json
 
-# Export to CSV with all enhanced data
+# Export to CSV with vulnerability data
 python3 network_mapper.py 192.168.1.0/24 -o my_scan -f csv
 
-# Use nmap for advanced scanning
+# Use nmap for advanced scanning with vulnerability assessment
 python3 network_mapper.py 192.168.1.0/24 --nmap
 
-# Combine all options
-python3 network_mapper.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_scan -f json --nmap --exclude 10.0.0.1-10.0.0.10
+# Comprehensive vulnerability scan with all options
+python3 network_mapper.py 10.0.0.0/24 -t 75 --timeout 2 -o corporate_vuln_scan -f json --nmap --exclude 10.0.0.1-10.0.0.10
 ```
 
 ### Command Line Arguments
@@ -150,24 +156,40 @@ Host: 192.168.1.100 (webserver.local)
 [+] Results exported to scan_results.json (1 hosts with open ports)
 ```
 
-### Enhanced JSON Output
+### Enhanced JSON Output with Vulnerability Data
 ```json
 {
   "scan_info": {
     "target_network": "192.168.1.0/24",
     "scan_time": "2024-01-15T10:30:45.123456",
     "total_hosts": 1,
-    "hosts_with_open_ports": 1
+    "hosts_with_open_ports": 1,
+    "vulnerability_scan": true
   },
   "results": {
     "192.168.1.100": {
       "hostname": "webserver.local",
       "mac_address": "aa:bb:cc:dd:ee:ff",
       "device_type": "Linux Server (85%)",
-      "open_ports": [22, 80],
+      "open_ports": [21, 22, 80, 443],
       "services": {
-        "22": "SSH",
-        "80": "HTTP"
+        "21": "FTP - vsftpd 2.3.4",
+        "22": "SSH - OpenSSH 7.4",
+        "80": "HTTP - Apache 2.4.29",
+        "443": "HTTPS - Apache 2.4.29"
+      },
+      "vulnerabilities": {
+        "21": {
+          "service": "FTP",
+          "issues": ["Anonymous login enabled", "Outdated version"],
+          "risk_level": "High",
+          "cve_references": ["CVE-2011-2523"]
+        },
+        "22": {
+          "service": "SSH",
+          "issues": ["Weak encryption algorithms"],
+          "risk_level": "Medium"
+        }
       },
       "scan_time": "2024-01-15T10:30:45.123456"
     }
@@ -175,11 +197,53 @@ Host: 192.168.1.100 (webserver.local)
 }
 ```
 
-### Enhanced CSV Output
+### Enhanced CSV Output (Excel-Friendly Format)
 ```csv
-IP,Hostname,MAC Address,Device Type,Open Ports,Services
-192.168.1.100,webserver.local,aa:bb:cc:dd:ee:ff,Linux Server (85%),"22,80","22:SSH,80:HTTP"
+IP,Hostname,MAC_Address,Device_Type,Scan_Time,Port_21_FTP,Port_22_SSH,Port_80_HTTP,Port_443_HTTPS,Other_Ports
+192.168.1.100,webserver.local,aa:bb:cc:dd:ee:ff,Linux Server (85%),2024-01-15T10:30:45,FTP: Anonymous login (HIGH RISK),SSH: Weak encryption (MEDIUM),HTTP: Apache 2.4.29,HTTPS: Apache 2.4.29,
 ```
+
+## 🛡️ Vulnerability Assessment Features
+
+### Comprehensive Vulnerability Database
+The tool includes vulnerability assessments for 20+ common services:
+
+#### Network Services
+- **FTP (21)**: Anonymous access, version vulnerabilities, weak configurations
+- **SSH (22)**: Weak algorithms, outdated versions, configuration issues
+- **Telnet (23)**: Unencrypted protocols, default credentials
+- **SMTP (25)**: Open relays, version vulnerabilities
+- **DNS (53)**: Zone transfers, cache poisoning vulnerabilities
+
+#### Web Services  
+- **HTTP/HTTPS (80/443)**: Server vulnerabilities, SSL/TLS issues, directory traversal
+- **Alternative HTTP (8080/8443)**: Proxy vulnerabilities, admin interfaces
+
+#### Database Services
+- **MySQL (3306)**: Default credentials, version vulnerabilities, privilege escalation
+- **PostgreSQL (5432)**: Authentication bypass, injection vulnerabilities
+
+#### Remote Access
+- **RDP (3389)**: BlueKeep, weak authentication, encryption issues
+- **VNC (5900)**: Weak passwords, unencrypted connections
+
+#### And many more services with detailed vulnerability mappings...
+
+### Vulnerability Risk Levels
+- **🔴 HIGH**: Critical vulnerabilities requiring immediate attention
+- **🟡 MEDIUM**: Important security issues that should be addressed
+- **🟢 LOW**: Minor security concerns or informational findings
+
+### Excel Integration Guide
+For best results when opening CSV files in Excel:
+
+1. **Use Data Tab Import**: Don't double-click the CSV file
+2. **Set UTF-8 Encoding**: Ensures special characters display correctly  
+3. **Configure Delimiters**: Use comma as delimiter
+4. **Auto-fit Columns**: For better readability
+5. **Apply Filters**: To sort by risk levels or services
+
+📖 **See `Excel_Import_Guide.md` for detailed instructions**
 
 ## 🎯 Device Type Detection
 
@@ -326,6 +390,20 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 
 ## 🔄 Recent Enhancements
 
+### Version 1.2 Features (Latest)
+- ✅ **🛡️ Vulnerability Assessment Engine**: Comprehensive vulnerability database for 20+ services
+  - CVE reference mapping for critical vulnerabilities
+  - Risk level classification (High/Medium/Low)
+  - Attack vector identification and security recommendations
+- ✅ **📊 Excel-Friendly CSV Export**: Optimized spreadsheet format
+  - Separate columns for each service/vulnerability
+  - Shortened descriptions for better readability
+  - UTF-8 encoding support for special characters
+- ✅ **📖 Excel Integration Guide**: Step-by-step import instructions
+  - Data tab import methods
+  - Column formatting recommendations
+  - Troubleshooting common Excel issues
+
 ### Version 1.1 Features
 - ✅ **Device Type Detection**: Automatic classification with confidence scoring
 - ✅ **MAC Address Discovery**: ARP table lookup for physical addresses
@@ -336,14 +414,14 @@ python3 network_mapper.py 192.168.1.0/24 -t 200 --timeout 1 --no-smart-filter
 - ✅ **Better Reporting**: Cleaner output with device information
 
 ### Future Enhancements
-- GUI interface using tkinter or PyQt
-- Network topology visualization
-- Vulnerability scanning integration
-- Database storage for scan history
-- Web-based reporting dashboard
-- Integration with other security tools
-- Advanced device fingerprinting
-- Network change detection
+- 🔮 **Advanced Vulnerability Scanning**: Integration with CVE databases
+- 🔮 **GUI Interface**: User-friendly graphical interface
+- 🔮 **Network Topology Visualization**: Interactive network maps
+- 🔮 **Database Storage**: Scan history and trend analysis
+- 🔮 **Web-based Dashboard**: Real-time reporting interface
+- 🔮 **SIEM Integration**: Export to security information systems
+- 🔮 **Automated Reporting**: PDF/HTML report generation
+- 🔮 **Network Change Detection**: Baseline comparison features
 
 ## 📝 License
 
