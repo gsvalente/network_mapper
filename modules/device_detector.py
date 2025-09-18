@@ -122,10 +122,17 @@ class DeviceDetector:
         
         # Check service indicators (medium weight)
         for service in services.values():
-            service_lower = service.lower()
-            for indicator in indicators['services']:
-                if indicator in service_lower:
-                    score += 2
+            # Handle both dict and string service formats
+            if isinstance(service, dict):
+                service_string = service.get('raw_banner', '') or service.get('service', '')
+            else:
+                service_string = str(service) if service else ''
+            
+            if service_string:
+                service_lower = service_string.lower()
+                for indicator in indicators['services']:
+                    if indicator in service_lower:
+                        score += 2
         
         return score
     

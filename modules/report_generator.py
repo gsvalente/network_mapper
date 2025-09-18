@@ -10,6 +10,7 @@ import csv
 import time
 from datetime import datetime
 from collections import Counter
+import os
 
 try:
     from colorama import Fore
@@ -18,6 +19,14 @@ except ImportError:
     COLORS_AVAILABLE = False
     class Fore:
         RED = GREEN = YELLOW = BLUE = MAGENTA = CYAN = WHITE = RESET = ""
+
+# Import PDF templates
+try:
+    from .pdf_templates import ExecutiveReportTemplate, TechnicalReportTemplate
+    PDF_AVAILABLE = True
+except ImportError:
+    PDF_AVAILABLE = False
+    print(f"{Fore.YELLOW}[!] PDF generation not available. Install reportlab to enable PDF reports.")
 
 
 class ReportGenerator:
@@ -183,8 +192,17 @@ class ReportGenerator:
         with open(self.output_file, 'w') as f:
             json.dump(data, f, indent=2)
     
-    def export_results(self, scan_results, target_network, format_type='json', filename=None, vulnerability_assessments=None):
-        """Export scan results to file (batch mode)"""
+    def export_results(self, scan_results, target_network, format_type='json', filename=None, vulnerability_assessments=None, template_type='executive'):
+        """Export scan results to file with template selection support
+        
+        Args:
+            scan_results: Dictionary of scan results
+            target_network: Target network string
+            format_type: Output format ('json', 'csv', 'pdf', 'pdf_executive', 'pdf_technical')
+            filename: Output filename (without extension)
+            vulnerability_assessments: Optional vulnerability data
+            template_type: PDF template type ('executive', 'technical', 'both')
+        """
         if not filename:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"network_scan_{timestamp}"
@@ -192,11 +210,98 @@ class ReportGenerator:
         # Filter out hosts with no open ports
         filtered_results = {ip: data for ip, data in scan_results.items() if data.get('open_ports')}
         
-        if format_type.lower() == 'json':
+        format_type = format_type.lower()
+        
+        # Handle PDF format with template selection
+        if format_type == 'pdf':
+            return self._export_pdf_with_template(filtered_results, target_network, filename, vulnerability_assessments, template_type)
+        elif format_type == 'json':
             self._export_json(filtered_results, target_network, filename, vulnerability_assessments)
-        elif format_type.lower() == 'csv':
+        elif format_type == 'csv':
             self._export_csv(filtered_results, filename, vulnerability_assessments)
+        elif format_type == 'pdf_executive':
+            self._export_pdf_executive(filtered_results, target_network, filename, vulnerability_assessments)
+        elif format_type == 'pdf_technical':
+            self._export_pdf_technical(filtered_results, target_network, filename, vulnerability_assessments)
+        else:
+            print(f"{Fore.RED}[-] Unsupported format: {format_type}")
+            print(f"{Fore.YELLOW}[!] Supported formats: json, csv, pdf, pdf_executive, pdf_technical")
     
+    def _export_pdf_with_template(self, filtered_results, target_network, filename, vulnerability_assessments, template_type='executive'):
+        """Export PDF with template selection support
+        
+        Args:
+            template_type: 'executive', 'technical', or 'both'
+        """
+        if not PDF_AVAILABLE:
+            print(f"{Fore.RED}[-] PDF generation not available. Install reportlab to enable PDF reports.")
+            return None
+        
+        generated_files = []
+        
+        # Prepare scan data once for all templates
+        scan_data = self._prepare_scan_data_for_pdf(filtered_results, target_network, vulnerability_assessments)
+        
+        if template_type.lower() in ['executive', 'both']:
+            try:
+                exec_filename = f"{filename}_executive.pdf"
+                template = ExecutiveReportTemplate()
+                output_path = template.generate_report(scan_data, exec_filename)
+                print(f"{Fore.GREEN}[+] Executive PDF report generated: {output_path}")
+                generated_files.append(output_path)
+            except Exception as e:
+                print(f"{Fore.RED}[-] Error generating executive PDF report: {e}")
+        
+        if template_type.lower() in ['technical', 'both']:
+            try:
+                tech_filename = f"{filename}_technical.pdf"
+                template = TechnicalReportTemplate()
+                output_path = template.generate_report(scan_data, tech_filename)
+                print(f"{Fore.GREEN}[+] Technical PDF report generated: {output_path}")
+                generated_files.append(output_path)
+            except Exception as e:
+                print(f"{Fore.RED}[-] Error generating technical PDF report: {e}")
+        
+        if not generated_files:
+            print(f"{Fore.RED}[-] No PDF reports were generated successfully")
+            return None
+        
+        return generated_files if len(generated_files) > 1 else generated_files[0]
+    
+    def get_available_templates(self):
+        """Get list of available PDF templates"""
+        templates = {
+            'executive': {
+                'name': 'Executive Summary Report',
+                'description': 'High-level overview with risk dashboards and compliance status',
+                'suitable_for': 'Management, executives, compliance teams'
+            },
+            'technical': {
+                'name': 'Technical Analysis Report', 
+                'description': 'Detailed technical findings with remediation guides',
+                'suitable_for': 'Security teams, system administrators, technical staff'
+            },
+            'both': {
+                'name': 'Complete Report Package',
+                'description': 'Both executive and technical reports',
+                'suitable_for': 'Comprehensive documentation and mixed audiences'
+            }
+        }
+        return templates
+    
+    def print_template_options(self):
+        """Print available template options for user selection"""
+        templates = self.get_available_templates()
+        
+        print(f"\n{Fore.CYAN}Available PDF Report Templates:")
+        print(f"{Fore.CYAN}{'='*50}")
+        
+        for key, template in templates.items():
+            print(f"{Fore.GREEN}[{key.upper()}] {template['name']}")
+            print(f"  Description: {template['description']}")
+            print(f"  Suitable for: {template['suitable_for']}")
+            print()
+
     def _export_json(self, filtered_results, target_network, filename, vulnerability_assessments):
         """Export results to JSON format with vulnerability data"""
         filename += '.json'
@@ -225,6 +330,98 @@ class ReportGenerator:
             json.dump(export_data, f, indent=2)
         
         print(f"{Fore.GREEN}[+] Results exported to {filename} ({len(filtered_results)} hosts with open ports)")
+    
+    def _export_pdf_executive(self, filtered_results, target_network, filename, vulnerability_assessments):
+        """Export results to Executive PDF format"""
+        if not PDF_AVAILABLE:
+            print(f"{Fore.RED}[-] PDF generation not available. Install reportlab to enable PDF reports.")
+            return
+        
+        filename += '_executive.pdf'
+        
+        # Prepare scan data for PDF template
+        scan_data = self._prepare_scan_data_for_pdf(filtered_results, target_network, vulnerability_assessments)
+        
+        try:
+            template = ExecutiveReportTemplate()
+            output_path = template.generate_report(scan_data, filename)
+            print(f"{Fore.GREEN}[+] Executive PDF report generated: {output_path}")
+            return output_path
+        except Exception as e:
+            print(f"{Fore.RED}[-] Error generating executive PDF report: {e}")
+            return None
+    
+    def _export_pdf_technical(self, filtered_results, target_network, filename, vulnerability_assessments):
+        """Export results to Technical PDF format"""
+        if not PDF_AVAILABLE:
+            print(f"{Fore.RED}[-] PDF generation not available. Install reportlab to enable PDF reports.")
+            return
+        
+        filename += '_technical.pdf'
+        
+        # Prepare scan data for PDF template
+        scan_data = self._prepare_scan_data_for_pdf(filtered_results, target_network, vulnerability_assessments)
+        
+        try:
+            template = TechnicalReportTemplate()
+            output_path = template.generate_report(scan_data, filename)
+            print(f"{Fore.GREEN}[+] Technical PDF report generated: {output_path}")
+            return output_path
+        except Exception as e:
+            print(f"{Fore.RED}[-] Error generating technical PDF report: {e}")
+            return None
+    
+    def _prepare_scan_data_for_pdf(self, filtered_results, target_network, vulnerability_assessments):
+        """Prepare scan data in format expected by PDF templates"""
+        # Convert scan results to PDF template format
+        hosts_data = {}
+        
+        for ip, result in filtered_results.items():
+            # Convert open ports to expected format
+            open_ports = []
+            for port_data in result.get('open_ports', []):
+                # Handle both dict and simple port number formats
+                if isinstance(port_data, dict):
+                    port_num = port_data.get('port', port_data)
+                    service = port_data.get('service', 'unknown')
+                else:
+                    port_num = port_data
+                    service = result.get('services', {}).get(port_data, 'unknown')
+                
+                port_info = {
+                    'port': port_num,
+                    'protocol': 'TCP',  # Default to TCP
+                    'service': service,
+                    'version': 'Not detected'  # Could be enhanced with version detection
+                }
+                open_ports.append(port_info)
+            
+            hosts_data[ip] = {
+                'hostname': result.get('hostname', 'Unknown'),
+                'mac_address': result.get('mac_address', 'Unknown'),
+                'device_type': result.get('device_type', 'Unknown Device'),
+                'open_ports': open_ports,
+                'scan_time': result.get('scan_time', datetime.now().isoformat())
+            }
+            
+            # Add vulnerability data if available
+            if vulnerability_assessments and ip in vulnerability_assessments:
+                hosts_data[ip]['vulnerabilities'] = vulnerability_assessments[ip]
+        
+        # Prepare complete scan data structure
+        scan_data = {
+            'scan_info': {
+                'target_network': target_network,
+                'scan_time': datetime.now().isoformat(),
+                'total_hosts_discovered': self.total_hosts_found,
+                'hosts_with_open_ports': len(filtered_results),
+                'total_open_ports': sum(len(result.get('open_ports', [])) for result in filtered_results.values()),
+                'scan_duration_seconds': time.time() - self.scan_start_time if self.scan_start_time else 0
+            },
+            'hosts': hosts_data
+        }
+        
+        return scan_data
     
     def _export_csv(self, filtered_results, filename, vulnerability_assessments):
         """Export results to Excel-friendly CSV format"""

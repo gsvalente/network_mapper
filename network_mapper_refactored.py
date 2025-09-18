@@ -290,6 +290,9 @@ class NetworkMapper:
         if elapsed_time > 0:
             hosts_per_sec = len(self.discovered_hosts) / elapsed_time
             print(f"{Fore.GREEN}[+] Average scan rate: {hosts_per_sec:.2f} hosts/second")
+        
+        # Return the scan results
+        return self.scan_results
     
     def _get_risk_color(self, risk_level):
         """Get color for risk level display"""
@@ -306,7 +309,7 @@ class NetworkMapper:
         """Use nmap for advanced scanning if available"""
         return self.network_utils.nmap_scan(host)
     
-    def export_results(self, format_type='json', filename=None):
+    def export_results(self, format_type='json', filename=None, template_type=None):
         """Export scan results to file"""
         # Extract vulnerability assessments for export
         vulnerability_assessments = {}
@@ -318,13 +321,23 @@ class NetworkMapper:
         total_hosts, total_ports = self.network_utils.get_counters()
         self.report_generator.set_counters(total_hosts, total_ports)
         
-        self.report_generator.export_results(
-            self.scan_results, 
-            self.target_network, 
-            format_type, 
-            filename, 
-            vulnerability_assessments
-        )
+        if format_type == 'pdf' and template_type:
+            self.report_generator.export_results(
+                self.scan_results, 
+                self.target_network, 
+                format_type, 
+                filename, 
+                vulnerability_assessments,
+                template_type=template_type
+            )
+        else:
+            self.report_generator.export_results(
+                self.scan_results, 
+                self.target_network, 
+                format_type, 
+                filename, 
+                vulnerability_assessments
+            )
     
     def generate_vulnerability_report(self, filename=None):
         """Generate focused vulnerability assessment report"""
@@ -456,9 +469,12 @@ Configuration:
                        help=f'Timeout in seconds (default: {config["scan_options"]["timeout"]["value"]})')
     parser.add_argument('-o', '--output', 
                        help='Output filename (without extension)')
-    parser.add_argument('-f', '--format', choices=['json', 'csv'], 
+    parser.add_argument('-f', '--format', choices=['json', 'csv', 'pdf'], 
                        default=config['scan_options']['format']['value'],
                        help=f'Output format (default: {config["scan_options"]["format"]["value"]})')
+    parser.add_argument('--template', choices=['executive', 'technical', 'both'], 
+                       default='both',
+                       help='PDF template type: executive (management summary), technical (detailed analysis), or both (default: both)')
     
     # Feature flags with configurable defaults
     parser.add_argument('--ping-only', action='store_true', 
@@ -556,7 +572,10 @@ Configuration:
         
         # Export results (only if not using incremental mode)
         if args.output and not mapper.report_generator.incremental_mode:
-            mapper.export_results(args.format, args.output)
+            if args.format == 'pdf':
+                mapper.export_results(args.format, args.output, template_type=args.template)
+            else:
+                mapper.export_results(args.format, args.output)
         
         # Print final statistics
         stats = mapper.get_scan_statistics()
