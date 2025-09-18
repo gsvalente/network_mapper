@@ -1,0 +1,44 @@
+# GUI-Specific Requirements for Network Mapper
+# This file contains dependencies specifically needed for the GUI versions
+
+# Core GUI Framework
+# tkinter is included in Python standard library - no installation needed
+
+# GUI Enhancement Libraries
+requests>=2.31.0      # HTTP requests for vulnerability data and real-time updates
+Pillow>=10.0.0        # Image processing for icons, charts, and visual elements
+
+# Network Analysis & Visualization
+scapy>=2.5.0          # Advanced packet capture and network traffic analysis
+networkx>=3.1         # Network graph analysis and topology mapping
+matplotlib>=3.7.0     # Network visualization, charts, and topology diagrams
+numpy>=1.24.0         # Numerical operations for data analysis and visualization
+
+# Advanced Network Tools
+python-nmap>=0.7.1    # Enhanced nmap integration for advanced scanning
+
+# Data Processing & Export
+pandas>=2.0.0         # Data manipulation for results processing
+openpyxl>=3.1.0       # Excel file export functionality
+tabulate>=0.9.0       # Enhanced table formatting for reports
+
+# Threading & Performance
+# queue, threading, concurrent.futures - included in Python standard library
+
+# Installation Instructions:
+# pip install -r requirements-gui.txt
+#
+# Note: This installs GUI-specific dependencies in addition to the base requirements.
+# Make sure to install the main requirements.txt first:
+# pip install -r requirements.txt
+# pip install -r requirements-gui.txt
+
+# System Requirements for GUI:
+# - Python 3.8+ with tkinter support
+# - Windows: tkinter included by default
+# - Linux: may need to install python3-tk package
+# - macOS: tkinter included with Python from python.org
+
+# Optional GUI Enhancements:
+# - For better visual themes: pip install ttkthemes
+# - For system notifications: pip install plyer

@@ -3,6 +3,16 @@
 tqdm>=4.64.0          # For progress bars and real-time progress indicators
 colorama>=0.4.4       # For colored terminal output
 
+# GUI Dependencies (Required for GUI versions)
+tkinter               # GUI framework (included in Python standard library)
+requests>=2.31.0      # HTTP requests for vulnerability data and updates
+
+# Network Analysis Dependencies
+scapy>=2.5.0          # Advanced packet capture and network analysis
+python-nmap>=0.7.1    # Advanced nmap integration
+networkx>=3.1         # Network graph analysis and topology mapping
+matplotlib>=3.7.0     # Network visualization and charts
+
 # DevSecOps Security Dependencies (Required)
 cryptography>=41.0.0  # For encryption, secure storage, and cryptographic operations
 keyring>=24.0.0       # For secure credential storage in system keyring

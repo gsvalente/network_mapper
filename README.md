@@ -196,24 +196,32 @@ from modules.device_detector import DeviceDetector
 
 ## 📋 Requirements
 
-### Python Dependencies
-```bash
-# No external dependencies required - uses only Python standard library
-python3 -m pip install --upgrade pip
-```
+### Core Dependencies
+The tool now includes comprehensive dependencies for both command-line and GUI usage:
 
-### DevSecOps Dependencies
-- keyring (for secure credential storage)
-- cryptography (for encryption and security features)
-- bandit (for SAST security analysis)
-- safety (for dependency vulnerability scanning)
-- semgrep (for advanced static analysis)
+#### Main Requirements (`requirements.txt`)
+- **Core functionality**: tqdm, colorama for progress and output
+- **GUI framework**: tkinter (included in Python), requests for updates
+- **Network analysis**: scapy, python-nmap, networkx, matplotlib
+- **Security**: cryptography, keyring, python-dotenv
+- **Development**: bandit, safety, semgrep, pytest
+- **Reports**: reportlab, weasyprint, Pillow
 
-### Optional Dependencies
+#### GUI Enhancements (`requirements-gui.txt`)
+- **Data processing**: pandas, numpy for advanced analysis
+- **Export formats**: openpyxl for Excel, tabulate for formatting
+- **Visual enhancements**: Additional Pillow features
+
+### System Dependencies
 - **Nmap**: For advanced OS detection and service versioning
   - Linux: `sudo apt-get install nmap`
   - Windows: Download from [nmap.org](https://nmap.org/download.html)
-- **Colorama**: For enhanced colored output (automatically handled)
+- **Python 3.8+**: Required for GUI features and modern security libraries
+
+### Platform-Specific Notes
+- **Windows**: All dependencies included, tkinter available by default
+- **Linux**: May need `python3-tk` package for GUI: `sudo apt-get install python3-tk`
+- **macOS**: Use Python from python.org for full tkinter support
 
 ## 🛠️ Installation
 
@@ -229,17 +237,39 @@ pip install keyring cryptography psutil
 ```
 
 ### Quick Installation
+
+#### Command Line Version (Basic)
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd net_mapping
 
-# Install dependencies
+# Install core dependencies
 pip install -r requirements.txt
 
 # Verify installation
 python network_mapper_refactored.py --help
 ```
+
+#### GUI Version (Full Features)
+```bash
+# Clone the repository
+git clone <repository-url>
+cd net_mapping
+
+# Install all dependencies (core + GUI)
+pip install -r requirements.txt
+pip install -r requirements-gui.txt
+
+# Launch GUI
+python network_mapper_gui_refactored.py
+```
+
+#### Requirements Files
+- **`requirements.txt`**: Core dependencies + GUI essentials (network analysis, security, visualization)
+- **`requirements-gui.txt`**: Additional GUI-specific enhancements (data processing, advanced exports)
+
+**Note**: The main `requirements.txt` now includes GUI dependencies. Use `requirements-gui.txt` for additional enhancements.
 
 ### Configuration Setup
 The tool includes a configurable default flags system for easy customization:
@@ -285,7 +315,50 @@ python3 --version
 
 ## 📖 Usage
 
-### Basic Usage (Recommended - Modular Version)
+### 🖥️ GUI Usage (Recommended for Interactive Use)
+
+The Network Mapper includes both original and refactored GUI versions with comprehensive features:
+
+#### GUI Installation
+```bash
+# Install GUI-specific dependencies
+pip install -r requirements.txt
+pip install -r requirements-gui.txt
+
+# Launch the refactored GUI (recommended)
+python network_mapper_gui_refactored.py
+
+# Launch the original GUI (legacy)
+python network_mapper_gui.py
+```
+
+#### GUI Features
+- **🎯 Interactive Scanning**: Point-and-click network scanning with real-time progress
+- **📊 Live Results**: Real-time display of discovered hosts, services, and vulnerabilities
+- **🔍 Traffic Monitoring**: Advanced network traffic analysis with packet capture
+- **📈 Network Topology**: Visual network mapping and device relationship analysis
+- **📋 Export Options**: Multiple export formats (CSV, JSON, HTML, PDF reports)
+- **⚙️ Configuration Management**: Easy-to-use settings and security level configuration
+- **🛡️ Security Dashboard**: Real-time security monitoring and compliance tracking
+
+#### GUI Usage Instructions
+1. **Launch the GUI**: Run `python network_mapper_gui_refactored.py`
+2. **Configure Scan**: Enter target network (e.g., `192.168.1.0/24`) and adjust settings
+3. **Start Scanning**: Click "Start Scan" to begin network discovery
+4. **Monitor Progress**: Watch real-time progress and results in the interface
+5. **Analyze Results**: Review discovered hosts, services, and vulnerabilities
+6. **Traffic Analysis**: Use the Traffic tab for network monitoring and packet analysis
+7. **Export Data**: Generate reports in various formats (CSV, JSON, PDF)
+
+#### GUI Requirements
+- **Python 3.8+** with tkinter support (included in most Python installations)
+- **Additional packages**: See `requirements-gui.txt` for complete list
+- **System Requirements**:
+  - Windows: tkinter included by default
+  - Linux: Install `python3-tk` package if needed
+  - macOS: tkinter included with Python from python.org
+
+### 💻 Command Line Usage (Recommended - Modular Version)
 
 ```bash
 # Scan a network with vulnerability assessment (new modular version)
